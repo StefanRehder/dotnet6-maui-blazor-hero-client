@@ -11,7 +11,7 @@ public class HeroService
 
   public List<Hero> Heroes { get; private set; }
 
-  // TODO: Læg denne i constants i en json konfigurationsfil
+  // TODO: Put this constant in a JSON configuration file
   private const string constRestUrl = "https://simple-hero-api-service.azurewebsites.net/api/Heroes/{0}";
 
   public HeroService()
@@ -37,10 +37,12 @@ public class HeroService
         string content = await response.Content.ReadAsStringAsync();
         Heroes = JsonSerializer.Deserialize<List<Hero>>(content, _serializerOptions);
       }
+      else
+        Debug.WriteLine(@"ERROR {0}", response.StatusCode);
     }
     catch (Exception ex)
     {
-      Debug.WriteLine(@"\tERROR {0}", ex.Message);
+      Debug.WriteLine(@"ERROR {0}", ex.Message);
     }
 
     return Heroes;
@@ -54,11 +56,13 @@ public class HeroService
     {
       HttpResponseMessage response = await _client.DeleteAsync(uri);
       if (response.IsSuccessStatusCode)
-        Debug.WriteLine(@"\tHero successfully deleted.");
+        Debug.WriteLine(@"Hero successfully deleted.");
+      else
+        Debug.WriteLine(@"ERROR {0}", response.StatusCode);
     }
     catch (Exception ex)
     {
-      Debug.WriteLine(@"\tERROR {0}", ex.Message);
+      Debug.WriteLine(@"ERROR {0}", ex.Message);
     }
   }
 
@@ -75,11 +79,13 @@ public class HeroService
       response = await _client.PostAsync(uri, content);
 
       if (response.IsSuccessStatusCode)
-        Debug.WriteLine(@"\tHero successfully saved.");
+        Debug.WriteLine(@"Hero successfully saved.");
+      else
+        Debug.WriteLine(@"ERROR {0}", response.StatusCode);
     }
     catch (Exception ex)
     {
-      Debug.WriteLine(@"\tERROR {0}", ex.Message);
+      Debug.WriteLine(@"ERROR {0}", ex.Message);
     }
   }
 
@@ -96,11 +102,13 @@ public class HeroService
       response = await _client.PutAsync(uri, content);
 
       if (response.IsSuccessStatusCode)
-        Debug.WriteLine(@"\tHero successfully saved.");
+        Debug.WriteLine(@"Hero successfully saved.");
+      else
+        Debug.WriteLine(@"ERROR {0}", response.StatusCode);
     }
     catch (Exception ex)
     {
-      Debug.WriteLine(@"\tERROR {0}", ex.Message);
+      Debug.WriteLine(@"ERROR {0}", ex.Message);
     }
   }
 
@@ -117,10 +125,12 @@ public class HeroService
         var hero = JsonSerializer.Deserialize<Hero>(content, _serializerOptions);
         return hero;
       }
+      else
+        Debug.WriteLine(@"ERROR {0}", response.StatusCode);
     }
     catch (Exception ex)
     {
-      Debug.WriteLine(@"\tERROR {0}", ex.Message);
+      Debug.WriteLine(@"ERROR {0}", ex.Message);
     }
 
     return null;
