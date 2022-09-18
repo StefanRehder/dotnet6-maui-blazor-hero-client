@@ -1,0 +1,65 @@
+﻿@page "/heroes"
+
+@using dotnet6_maui_blazor_hero_client.Data
+
+@inject NavigationManager NavigationManager
+@inject HeroService HeroService
+
+<h1>Heroes</h1>
+
+<p>This component demonstrates calls to the simple hero api.</p>
+
+@if (heroes == null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<button class="btn btn-primary" @onclick="CreateNewHero">Create Hero</button>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Strength</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var hero in heroes)
+			{
+				<tr>
+					<td>@hero.Name</td>
+					<td>@hero.Strength</td>
+					<td><button class="btn btn-primary" @onclick="() => UpdateHero(hero)">Edit Hero</button></td>
+					<td><button class="btn btn-primary" @onclick="() => DeleteHero(hero)">Delete Hero</button></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private IEnumerable<Hero> heroes;
+
+	protected override async Task OnInitializedAsync()
+	{
+		heroes = await HeroService.RefreshDataAsync();
+	}
+
+	protected async void DeleteHero(Hero hero) {
+		await HeroService.DeleteHeroAsync(hero);
+		heroes = await HeroService.RefreshDataAsync();
+		this.StateHasChanged();
+	}
+
+	protected void CreateNewHero() {
+		NavigationManager.NavigateTo("/hero/add");
+	}
+
+	protected void UpdateHero(Hero hero)
+	{
+		NavigationManager.NavigateTo($"/hero/edit/{hero.Name}");
+	}
+}

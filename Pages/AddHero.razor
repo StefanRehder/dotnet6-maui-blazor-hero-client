@@ -1,0 +1,46 @@
+﻿@page "/hero/add"
+@using System.Net.Http.Json
+@using dotnet6_maui_blazor_hero_client.Data
+
+@inject HeroService HeroService
+@inject NavigationManager NavigationManager
+<h1>Create a new Hero</h1>
+<hr />
+<EditForm Model="@hero" OnValidSubmit="SaveHero">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="hero.Name" />
+        </div>
+        <ValidationMessage For="@(() => hero.Name)" />
+    </div>
+    <div class="mb-3">
+        <label for="Strength" class="form-label">Strength</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="strengthAsString" />
+        </div>
+        <ValidationMessage For="@(() => hero.Strength)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+    protected Hero hero = new Hero();
+    protected string strengthAsString = "";
+
+    protected async Task SaveHero()
+    {
+        hero.Strength = int.Parse(strengthAsString);
+        await HeroService.CreateHeroAsync(hero);
+        Cancel();
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("/heroes");
+    }
+}
